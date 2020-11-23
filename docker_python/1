@@ -1,0 +1,10 @@
+from ubuntu:14.04
+run apt update
+run apt install python-all python-pip git -y
+workdir /root/test1
+run git clone https://github.com/corneliusdrebbel/devops_school.git ./repo
+run pip install -qr ./repo/requirements.txt
+run mkdir /opt/webapp
+run cp ./repo/app.py /opt/webapp/
+expose 5000
+cmd ["python","/opt/webapp/app.py"]
