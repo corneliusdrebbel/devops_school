@@ -1,17 +1,18 @@
-version: '3' 
+version: '3'
 services:
-  
   maven:
     build:
      context: .
      dockerfile: Dockerfile_maven
     volumes:
-     - /root/project:/box
-#  tomcat:
- #   build:
-  #    context: .
-   #   dockerfile: Dockerfile_tomcat
-    #ports:
-     # - "8080:8080"
-
-
+     - app_volume:/box/app
+  tomcat:
+    build:
+      context: .
+      dockerfile: Dockerfile_tomcat
+    ports:
+      - "8080:8080"
+    volumes:
+      - app_volume:/usr/local/tomcat/webapps
+volumes:
+  app_volume:

@@ -1,4 +1,6 @@
-FROM maven:3.6.3-jdk-11
+FROM maven:3.6.3-jdk-11-slim
 WORKDIR ./box
 COPY ./boxfuse ./
 RUN mvn package
+RUN mkdir ./app
+RUN cp ./target/hello-1.0.war ./app/hello.war
