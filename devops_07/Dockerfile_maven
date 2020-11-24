@@ -1,6 +1,9 @@
-FROM maven:3.6.3-jdk-11-slim
+FROM maven:3.6.3-jdk-11
 WORKDIR ./box
+#копирование файлов проекта внутрь образа
 COPY ./boxfuse ./
+#сборка
 RUN mvn package
+#создание отдельной папки с готовым артефактом
 RUN mkdir ./app
 RUN cp ./target/hello-1.0.war ./app/hello.war
