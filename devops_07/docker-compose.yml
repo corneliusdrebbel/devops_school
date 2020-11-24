@@ -17,3 +17,4 @@ services:
 volumes:
   app_volume:
   mvn_volume:
+  
