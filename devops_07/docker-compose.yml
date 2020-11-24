@@ -5,7 +5,7 @@ services:
      context: .
      dockerfile: Dockerfile_maven
     volumes:
-     - mvn_volume:/box/app
+     - volume1:/box/app
   tomcat:
     build:
       context: .
@@ -13,8 +13,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - app_volume:/usr/local/tomcat/webapps
+      - volume1:/usr/local/tomcat/webapps
 volumes:
-  app_volume:
-  mvn_volume:
-  
+  volume1:
