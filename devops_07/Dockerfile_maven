@@ -6,4 +6,4 @@ COPY ./boxfuse ./
 RUN mvn package
 #создание отдельной папки с готовым артефактом
 RUN mkdir ./app
-RUN cp ./target/hello-1.0.war box/app/hello.war
+RUN cp ./target/hello-1.0.war ./app/hello.war
