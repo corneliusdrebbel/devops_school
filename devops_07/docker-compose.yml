@@ -6,7 +6,7 @@ services:
      context: .
      dockerfile: Dockerfile_maven
     volumes:
-     - /root/src/box:/box
+     - /root/project:/box
 #  tomcat:
  #   build:
   #    context: .
