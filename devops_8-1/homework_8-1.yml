@@ -33,7 +33,7 @@
     prompt: Enter Docker password
 
   tasks:
-  - name: Log into DockerHub
+  - name: log into DockerHub
     docker_login:
      username: "{{ username }}"
      email: "{{ email }}"
@@ -54,9 +54,12 @@
   hosts: prod
   become: yes
 
-  - name: pull image from registry
+  - name: pull image from registry and start container
     docker_container:
      name: ansible-docker
      image: corneliusdrebbel/repo1:ansible-docker
+     pull: yes
+     state: started
+     restart: yes
      ports:
       - "0.0.0.0:8080:8080"
