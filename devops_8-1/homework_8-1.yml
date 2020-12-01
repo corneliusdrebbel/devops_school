@@ -27,8 +27,10 @@
   vars_prompt:
   - name: username
     prompt: Enter Docker username
+    private: no
   - name: email
     prompt: Enter Docker email
+    privete: no
   - name: password
     prompt: Enter Docker password
 
@@ -53,7 +55,8 @@
 - name: prod server provisioning
   hosts: prod
   become: yes
-
+  
+  tasks:
   - name: pull image from registry and start container
     docker_container:
      name: ansible-docker
