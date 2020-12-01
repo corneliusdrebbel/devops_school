@@ -30,7 +30,7 @@
     private: no
   - name: email
     prompt: Enter Docker email
-    privete: no
+    private: no
   - name: password
     prompt: Enter Docker password
 
@@ -55,7 +55,7 @@
 - name: prod server provisioning
   hosts: prod
   become: yes
-  
+
   tasks:
   - name: pull image from registry and start container
     docker_container:
