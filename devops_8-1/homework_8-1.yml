@@ -1,0 +1,63 @@
+- name: build docker image
+  hosts: 127.0.0.1
+  connection: local
+#  vars_prompt:
+#  - name: username
+#    prompt: Enter Docker username
+#  - name: email
+#    prompt: Enter Docker email
+#  - name: password
+#    prompt: Enter Docker password
+#     private: yes
+
+  tasks:
+  - name: ensure docker package is present
+    apt:
+     name: docker.io
+     state: present
+
+#  - name: ensure python-pip package is present
+#    apt:
+#     name: python-pip
+#     state: present
+
+#  - name: ensure python module for docker is present
+#    pip:
+#     name: docker
+#     state: present
+
+  - name: Log into DockerHub
+    docker_login:
+     username: corneliusdrebbel
+     email: darkorion89@gmail.com
+     password: EbBg4?jHu=83m]&
+
+#  - name: docker login
+#    docker_login:
+#     username: "{{ username }}"
+#     email: "{{ email }}"
+#     password: "{{ password }}"
+
+  - name: build and push image to registry
+    docker_image:
+     build:
+      path: .
+     name: ansible-docker
+     repository: corneliusdrebbel/repo1:ansible-docker
+     push: yes
+     source: build
+
+
+
+    
+
+- name: prod server provisioning
+  hosts: prod
+  become: yes
+
+  tasks:
+  - name: Ensure docker package is present
+    apt:
+     name: docker.io
+     state: present
+
