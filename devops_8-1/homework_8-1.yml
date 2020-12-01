@@ -16,15 +16,15 @@
      name: docker.io
      state: present
 
-#  - name: ensure python-pip package is present
-#    apt:
-#     name: python-pip
-#     state: present
+  - name: ensure python-pip package is present
+    apt:
+     name: python-pip
+     state: present
 
-#  - name: ensure python module for docker is present
-#    pip:
-#     name: docker
-#     state: present
+  - name: ensure python module for docker is present
+    pip:
+     name: docker
+     state: present
 
   - name: Log into DockerHub
     docker_login:
@@ -47,17 +47,21 @@
      push: yes
      source: build
 
-
-
-    
-
 - name: prod server provisioning
   hosts: prod
   become: yes
 
   tasks:
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+     update_cache: yes
   - name: Ensure docker package is present
     apt:
      name: docker.io
      state: present
+  
+  - name: pull image from registry
+    docker_image:
+     name: corneliusdrebbel/repo1:ansible-docker
+     source: pull
 
