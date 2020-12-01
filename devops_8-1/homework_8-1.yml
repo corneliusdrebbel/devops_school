@@ -1,14 +1,5 @@
-- name: build docker image
-  hosts: 127.0.0.1
-  connection: local
-#  vars_prompt:
-#  - name: username
-#    prompt: Enter Docker username
-#  - name: email
-#    prompt: Enter Docker email
-#  - name: password
-#    prompt: Enter Docker password
-#     private: yes
+- name: install common apts
+  hosts: localhost, prod
 
   tasks:
   - name: ensure docker package is present
@@ -21,22 +12,32 @@
      name: python-pip
      state: present
 
+  - name: ensure python-apt is present
+    apt:
+     name: python-apt
+     state: present
+  
   - name: ensure python module for docker is present
     pip:
      name: docker
      state: present
 
+- name: build docker image
+  hosts: local
+  vars_prompt:
+  - name: username
+    prompt: Enter Docker username
+  - name: email
+    prompt: Enter Docker email
+  - name: password
+    prompt: Enter Docker password
+
+  tasks:
   - name: Log into DockerHub
     docker_login:
-     username: corneliusdrebbel
-     email: darkorion89@gmail.com
-     password: EbBg4?jHu=83m]&
-
-#  - name: docker login
-#    docker_login:
-#     username: "{{ username }}"
-#     email: "{{ email }}"
-#     password: "{{ password }}"
+     username: "{{ username }}"
+     email: "{{ email }}"
+     password: "{{ password }}"
 
   - name: build and push image to registry
     docker_image:
@@ -44,24 +45,24 @@
       path: .
      name: ansible-docker
      repository: corneliusdrebbel/repo1:ansible-docker
-     push: yes
      source: build
+     force_tag: yes
+     state: present
+     push: yes
 
 - name: prod server provisioning
   hosts: prod
   become: yes
 
   tasks:
-  - name: Run the equivalent of "apt-get update" as a separate step
-    apt:
-     update_cache: yes
   - name: Ensure docker package is present
     apt:
      name: docker.io
      state: present
-  
-  - name: pull image from registry
-    docker_image:
-     name: corneliusdrebbel/repo1:ansible-docker
-     source: pull
 
+  - name: pull image from registry
+    docker_container:
+     name: ansible-docker
+     image: corneliusdrebbel/repo1:ansible-docker
+     ports:
+      - "0.0.0.0:8080:8080"
