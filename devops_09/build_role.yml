@@ -1,0 +1,17 @@
+- name: Ensure maven package is present
+  apt:
+   name: maven
+   state: present
+
+- name: Ensure git package is present
+  apt:
+   name: git
+   state: present
+
+- name: pull app from repository
+  git:
+   repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
+   dest: /tmp/app
+
+- name: build project
+  shell: mvn -f /tmp/app/pom.xml package

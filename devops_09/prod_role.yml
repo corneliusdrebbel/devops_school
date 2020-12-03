@@ -1,0 +1,11 @@
+
+- name: Ensure tomcat package is present
+  apt:
+   name: tomcat9
+   state: present
+
+- name: Copy app from build server
+  synchronize:
+   src: /tmp/app/target/
+   dest: /usr/local/tomcat/webapps/
+  delegate_to: build
