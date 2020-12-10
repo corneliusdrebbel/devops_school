@@ -1,0 +1,5 @@
+FROM jenkins/jenkins:lts
+USER root
+RUN apt update
+RUN apt install curl -y
+RUN curl -sSL https://get.docker.com/ | sh
