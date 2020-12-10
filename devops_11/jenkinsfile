@@ -2,13 +2,14 @@ pipeline {
     agent {
         docker {
             image '35.246.171.127:8123/test2:init1'
+            args '-u root --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker '
         }
     }
 stages {
 
     stage ('Copy source') {
         steps {
-            git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+            git 'https://github.com/corneliusdrebbel/boxfuse.git'
         }
     }
     stage ('Build .war') {
@@ -16,6 +17,14 @@ stages {
             sh 'mvn package'
         }
     }
+    stage ('Build image') {
+        steps {
+            sh 'cp target/*.war ./'
+            sh 'cp docker/dockerfile ./ && docker build -t myapp .'
+            sh '''docker tag myapp 35.246.171.127:8123/apps/boxfuse:latest && docker push 35.246.171.127:8123/apps/boxfuse:latest'''
+        }
+    }
+
 }
 
 }
