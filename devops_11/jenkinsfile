@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image '35.246.171.127:8123/test2:init1'
-            args '-u root --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker '
+            args '-u root --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker -v /root/.docker/:/root/.docker/'
         }
     }
 stages {
