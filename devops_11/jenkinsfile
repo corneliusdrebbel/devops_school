@@ -1,0 +1,21 @@
+pipeline {
+    agent {
+        docker {
+            image '35.246.171.127:8123/test2:init1'
+        }
+    }
+stages {
+
+    stage ('Copy source') {
+        steps {
+            git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+        }
+    }
+    stage ('Build .war') {
+        steps {
+            sh 'mvn package'
+        }
+    }
+}
+
+}
