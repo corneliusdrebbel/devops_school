@@ -24,37 +24,33 @@
          count: 2
       register: ec2
 
-    - name: adding host to build-group
+    - name: adding host to buildgroup
       add_host:
          name: "{{ ec2.instances[0]['public_ip'] }}"
-         groups: build-group
+         groups: buildgroup
 
-    - name: adding host to prod-group
+    - name: adding host to prodgroup
       add_host:
          name: "{{ ec2.instances[1]['public_ip'] }}"
-         groups: prod-group
+         groups: prodgroup
 
     - name: Wait for SSH to come up
-      delegate_to: "{{ item.public_ip }}"
+      delegate_to: "{{ item.public_dns_name }}"
       wait_for_connection:
         delay: 60
         timeout: 320
       loop: "{{ ec2.instances }}"   
 
 - name: Provisioning build
-  hosts: build-group
-  tasks:
-    - name: Configure build server
-      become: yes
-      roles:
-       - common
-       - build
+  hosts: buildgroup
+  become: yes
+  roles:
+   - common
+   - build
 
 - name: Provisioning prod
-  hosts: prod-group
-  tasks:
-    - name: Configure prod server
-      become: yes
-      roles:
-       - common
-       - prod
+  hosts: prodgroup
+  become: yes
+  roles:
+   - common
+   - prod
