@@ -2,7 +2,6 @@
 - name: Create instances
   hosts: localhost
   gather_facts: False
-  connection: local
   vars:
     keypair: devops1
     instance_type: t2.micro
@@ -41,18 +40,41 @@
          state: started
       with_items: "{{ec2.instances}}" 
 
-- name: Provisioning build
+- name: build server provisioning
   hosts: buildgroup
   become: yes
   remote_user: ubuntu
-  roles:
-   - common
-   - build
 
-- name: Provisioning prod
+  tasks:
+  - name: Ensure maven and git packages is present
+    apt:
+     update_cache: yes
+     name: ["maven", "git"]
+     state: present
+
+  - name: pull app from repository
+    git:
+     repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
+     dest: /tmp/app
+
+  - name: build project
+    shell: mvn -f /tmp/app/pom.xml package
+     
+
+- name: prod server provisioning
   hosts: prodgroup
   become: yes
   remote_user: ubuntu
-  roles:
-   - common
-   - prod
+
+  tasks:
+  - name: Ensure tomcat package is present
+    apt:
+     update_cache: yes
+     name: tomcat9
+     state: present
+
+  - name: Copy app from build server
+    synchronize:
+     src: /tmp/app/target/
+     dest: /usr/local/tomcat/webapps/
+    delegate_to: buildgroup

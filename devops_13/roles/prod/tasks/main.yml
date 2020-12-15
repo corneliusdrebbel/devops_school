@@ -2,7 +2,8 @@
 # tasks file for prod
 - name: Install Tomcat 9
   apt:
-    name: tomcat9 
+    update_cache: yes
+    name: ["tomcat9"]
     state: present
 
 - name: Ensure Tomcat9 is started and enabled on boot.

@@ -2,11 +2,9 @@
 # tasks file for build
 - name: install default-jdk and Maven
   apt:
-    name: "{{ packages }}"
-  vars:
-    packages:
-    - default-jdk
-    - maven
+    update_cache: yes
+    name: ["default-jdk","maven"]
+    state: present
 
 - name: GIT Clone Boxfuse
   git:

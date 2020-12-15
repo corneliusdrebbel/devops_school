@@ -1,9 +1,7 @@
 ---
 # tasks file for common
 - name: install packages
-  apt: name={{item}} state=present update_cache=yes
-  with_items:
-    - git
-    - tree
-    - mc
-    - htop
+  apt:
+    update_cache: yes
+    name: ["mc", "htop", "git"]
+    state: present
