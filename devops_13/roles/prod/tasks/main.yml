@@ -1,5 +1,5 @@
 ---
-# tasks file for prod-serv
+# tasks file for prod
 - name: Install Tomcat 9
   apt:
     name: tomcat9 
@@ -12,6 +12,6 @@
     enabled: yes
 
 - name: Copy Remote-To-Remote (from serverA to serverB)
-  synchronize: src="{{app_dir_on_dev}}" dest="{{tomcat_dir}}"/webapps/
-  delegate_to: dev-serv
+  synchronize: src="{{app_dir_on_build}}" dest="{{tomcat_dir}}"/webapps/
+  delegate_to: build
   notify: restart_tomcat

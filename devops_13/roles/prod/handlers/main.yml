@@ -1,5 +1,5 @@
 ---
-# handlers file for prod-serv
+# handlers file for prod
 - name: restart_tomcat
   systemd:
     name: "{{ tomcat_service_name }}"

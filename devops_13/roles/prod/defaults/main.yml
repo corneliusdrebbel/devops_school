@@ -1,0 +1,5 @@
+---
+# defaults file for prod
+app_dir_on_build: /home/darkorion89/homework13/target/
+tomcat_dir: /var/lib/tomcat9
+tomcat_service_name: tomcat9

@@ -22,11 +22,21 @@
          count: 2
       register: ec2
 
-    - name: Add new instance to host group
-      add_host:
-        hostname: "{{ item.public_ip }}"
-        groupname: launched
-      loop: "{{ ec2.instances }}"
+     - name: adding host to master
+        add_host:
+         name: "{{ ec2.instances[0]['public_ip'] }}"
+         groups: build-group
+
+     - name: adding host to master
+        add_host:
+         name: "{{ ec2.instances[1]['public_ip'] }}"
+         groups: prod-group
+
+#    - name: Add new instance to host group
+#      add_host:
+#        hostname: "{{ item.public_ip }}"
+#        groupname: launched
+#      loop: "{{ ec2.instances }}"
 
 #    - name: Wait for SSH to come up
 #      delegate_to: "{{ item.public_dns_name }}"
@@ -35,10 +45,16 @@
 #        timeout: 320
 #      loop: "{{ ec2.instances }}"
 
-#- name: Configure instance(s)
-#  hosts: launched
-#  become: True
-#  gather_facts: True
-#  roles:
-#    - my_awesome_role
-#    - my_awesome_test
+- name: Configure build server
+  hosts: build-group
+  become: True
+  roles:
+    - common
+    - build
+
+- name: Configure prod server
+  hosts: prod-group
+  become: True
+  roles:
+    - common
+    - prod

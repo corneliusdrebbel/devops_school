@@ -1,0 +1,4 @@
+---
+# defaults file for build
+home_project_folder: /home/darkorion89/homework13
+github_boxfuse_link: "https://github.com/boxfuse/boxfuse-sample-java-war-hello.git"
