@@ -1,0 +1,43 @@
+- name: Create a sandbox instance
+  hosts: localhost
+  gather_facts: False
+  vars:
+    keypair: devops
+    instance_type: t2.micro
+    security_group: mysecgp1
+    image: ami-0e1ce3e0deb8896d2
+    region: eu-central-1
+  tasks:
+    - name: Launch instance
+      amazon.aws.ec2:
+         key_name: "{{ keypair }}"
+         group: "{{ security_group }}"
+         instance_type: "{{ instance_type }}"
+         image: "{{ image }}"
+         wait: true
+         region: "{{ region }}"
+         vpc_subnet_id: subnet-11f26b7b
+         assign_public_ip: yes
+         count: 2
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        groupname: launched
+      loop: "{{ ec2.instances }}"
+
+#    - name: Wait for SSH to come up
+#      delegate_to: "{{ item.public_dns_name }}"
+#      wait_for_connection:
+#        delay: 60
+#        timeout: 320
+#      loop: "{{ ec2.instances }}"
+
+#- name: Configure instance(s)
+#  hosts: launched
+#  become: True
+#  gather_facts: True
+#  roles:
+#    - my_awesome_role
+#    - my_awesome_test
