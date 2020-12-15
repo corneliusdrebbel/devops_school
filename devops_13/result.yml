@@ -41,18 +41,19 @@
         timeout: 320
       loop: "{{ ec2.instances }}"   
 
-- name: Provisioning
-  hosts: build-group, prod-group
+- name: Provisioning build
+  hosts: build-group
   tasks:
     - name: Configure build server
-      hosts: build-group
       become: yes
       roles:
        - common
        - build
 
+- name: Provisioning prod
+  hosts: prod-group
+  tasks:
     - name: Configure prod server
-      hosts: prod-group
       become: yes
       roles:
        - common
