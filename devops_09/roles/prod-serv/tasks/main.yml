@@ -1,0 +1,17 @@
+---
+# tasks file for prod-serv
+- name: Install Tomcat 9
+  apt:
+    name: tomcat9 
+    state: present
+
+- name: Ensure Tomcat9 is started and enabled on boot.
+  service:
+    name: tomcat9
+    state: started 
+    enabled: yes
+
+- name: Copy Remote-To-Remote (from serverA to serverB)
+  synchronize: src="{{app_dir_on_dev}}" dest="{{tomcat_dir}}"/webapps/
+  delegate_to: dev-serv
+  notify: restart tomcat

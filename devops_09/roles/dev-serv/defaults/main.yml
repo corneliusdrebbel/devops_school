@@ -1,0 +1,4 @@
+---
+# defaults file for dev-serv
+home_project_folder: /home/skawap/home_work9
+github_boxfuse_link: "https://github.com/boxfuse/boxfuse-sample-java-war-hello.git"

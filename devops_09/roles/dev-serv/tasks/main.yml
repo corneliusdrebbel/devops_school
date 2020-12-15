@@ -1,0 +1,17 @@
+---
+# tasks file for dev-serv
+- name: install default-jdk and Maven
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - default-jdk
+    - maven
+
+- name: GIT Clone Boxfuse
+  git:
+    repo: "{{ github_boxfuse_link }}"
+    dest: "{{ home_project_folder }}"
+
+- name: maven package war
+  command: mvn -f "{{ home_project_folder }}"/pom.xml clean package

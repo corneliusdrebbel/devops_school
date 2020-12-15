@@ -1,0 +1,17 @@
+version: '3.3'
+services: 
+    web:
+        build: .
+        ports:
+         - "8080:8080"
+    db:
+        image: mysql
+        environment:
+         MYSQL_ROOT_PASSWORD: my-secret-pw
+         MYSQL_USER: "acp4pogynvaeidfj"
+         MYSQL_PASSWORD: "jc31d2qyy7h9jv5jn1u9uosjksxzaizw"
+         MYSQL_DATABASE: "dd"
+         
+        ports:
+         - "3306:3306"
+         - "33060:33060"

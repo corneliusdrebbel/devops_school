@@ -1,0 +1,6 @@
+---
+# defaults file for prod-serv 
+app_dir_on_dev: /home/skawap/home_work8/target/
+tomcat_dir: /var/lib/tomcat9
+
+tomcat_service_name: tomcat9

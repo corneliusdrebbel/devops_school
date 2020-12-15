@@ -1,0 +1,18 @@
+---
+- name: app Boxfuse provisioning
+  hosts: dev
+  become: yes
+
+  roles:
+   - common
+   - dev-serv
+   - security
+
+- name: deploy and start Boxfuse
+  hosts: prod
+  become: yes
+
+  roles:
+   - common
+   - prod-serv
+   - security
