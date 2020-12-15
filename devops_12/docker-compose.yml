@@ -7,10 +7,10 @@ services:
     db:
         image: mysql
         environment:
-         MYSQL_ROOT_PASSWORD: my-secret-pw
-         MYSQL_USER: "acp4pogynvaeidfj"
-         MYSQL_PASSWORD: "jc31d2qyy7h9jv5jn1u9uosjksxzaizw"
-         MYSQL_DATABASE: "dd"
+         MYSQL_ROOT_PASSWORD: my-secret-1
+         MYSQL_USER: "db_user_1"
+         MYSQL_PASSWORD: "my_super_secret_1"
+         MYSQL_DATABASE: "database1"
          
         ports:
          - "3306:3306"
