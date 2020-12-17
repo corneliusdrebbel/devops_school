@@ -85,5 +85,5 @@
   - name: Copy app from build server
     synchronize:
      src: /tmp/app/target/
-     dest: /usr/local/tomcat/webapps/
+     dest: /var/lib/tomcat9/webapps/
     delegate_to: buildgroup
