@@ -14,10 +14,11 @@
       ec2_key:
         name: devops13
         region: eu-central-1
+        force: yes
       register: ec2_key_result
 
     - name: Save private key
-      copy: content="{{ ec2_key_result.key.private_key }}" dest=".ssh/id_rsa" mode=0600
+      copy: content="{{ ec2_key_result.key.private_key }}" dest="~/.ssh/id_rsa" mode=0600
 
     - name: Launch instance
       ec2:
@@ -35,12 +36,12 @@
 
     - name: adding host to buildgroup
       add_host:
-         name: "{{ ec2.instances[0]['public_ip'] }}"
+         name: "{{ ec2.instances[0].public_ip }}"
          groups: buildgroup
 
     - name: adding host to prodgroup
       add_host:
-         name: "{{ ec2.instances[1]['public_ip'] }}"
+         name: "{{ ec2.instances[1].public_ip }}"
          groups: prodgroup
 
     - name: Wait for SSH to come up
@@ -90,4 +91,4 @@
     synchronize:
      src: /tmp/app/target/
      dest: /var/lib/tomcat9/webapps/
-    delegate_to: buildgroup
+    delegate_to: "{{ groups['buildgroup'][0] }}"
