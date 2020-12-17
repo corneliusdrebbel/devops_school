@@ -14,5 +14,5 @@
 
 - name: Copy Remote-To-Remote (from serverA to serverB)
   synchronize: src="{{app_dir_on_build}}" dest="{{tomcat_dir}}"/webapps/
-  delegate_to: buildgroup
+  delegate_to: "{{ groups['buildgroup'][0] }}"
   notify: restart_tomcat
