@@ -3,12 +3,21 @@
   hosts: localhost
   gather_facts: False
   vars:
-    keypair: devops1
     instance_type: t2.micro
     security_group: mysecgp1
     image: ami-0e1ce3e0deb8896d2
     region: eu-central-1
   tasks:
+
+    - name: create key pair
+      ec2_key:
+        name: devops13
+        region: eu-central-1
+      register: ec2_key_result
+
+    - name: Save private key
+      copy: content="{{ ec2_key_result.key.private_key }}" dest=".ssh/id_rsa" mode=0600
+
     - name: Launch instance
       ec2:
          profile: default
@@ -60,7 +69,6 @@
   - name: build project
     shell: mvn -f /tmp/app/pom.xml package
      
-
 - name: prod server provisioning
   hosts: prodgroup
   become: yes
