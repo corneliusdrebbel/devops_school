@@ -1,0 +1,154 @@
+---
+- name: Create a instance
+  hosts: localhost
+  gather_facts: False
+  vars:
+    keypair: amazon
+    instance_type: t2.micro
+    image: ami-0e1ce3e0deb8896d2
+    region: eu-central-1
+    instance_profile_name: s3-sanspank-role
+  tasks:
+
+    - name: create ec2 group
+      ec2_group:
+        name: Ec2SecutiryGroup80
+        description: 80 port fore tomcat
+        region: eu-central-1
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 8080
+            to_port: 8080
+            cidr_ip: 0.0.0.0/0
+
+    - name: Launch instance dev
+      ec2:
+         key_name: "{{ keypair }}"
+         group: Ec2SecutiryGroup80
+         instance_profile_name: "{{ instance_profile_name }}"
+         instance_type: "{{ instance_type }}"
+         user_data: |
+               #!/bin/sh
+               sudo apt install python -y
+         image: "{{ image }}"
+         wait: true
+         region: "{{ region }}"
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        name: "{{ item.public_ip }}"
+        groups: dev
+      loop: "{{ ec2.instances }}"
+    
+
+    - name: Launch instance prod
+      ec2:
+         key_name: "{{ keypair }}"
+         group: Ec2SecutiryGroup80
+         instance_profile_name: "{{ instance_profile_name }}"
+         instance_type: "{{ instance_type }}"
+         user_data: |
+               #!/bin/sh
+               sudo apt install python -y
+         image: "{{ image }}"
+         wait: true
+         region: "{{ region }}"
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        name: "{{ item.public_ip }}"
+        groups: prod
+      loop: "{{ ec2.instances }}"
+
+    - name: Pause for 3 minutes to build app cache
+      pause:
+        minutes: 3
+
+
+- name: Build app on instance
+  hosts: dev
+  remote_user: ubuntu
+  become: yes
+  tasks:
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+  - name: install packages
+    apt: name={{item}} state=present update_cache=yes
+    with_items:
+      - git
+      - python-pip
+      - awscli
+  - name: install boto
+    command: pip install boto
+    become: yes
+
+  - name: install boto3
+    command: pip install boto3
+    become: yes
+
+  - name: install default-jdk and Maven
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - default-jdk
+      - maven
+
+  - name: GIT Clone Boxfuse
+    git:
+      repo: 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+      dest: /tmp/skawap/
+
+  - name: maven package war
+    command: mvn -f /tmp/skawap/pom.xml clean package
+    become: yes
+  
+  - name: s3  upload war
+    command: aws s3 cp /tmp/skawap/target/hello-1.0.war s3://sanspank.com/hello-1.0.war
+    become: yes
+
+
+- name: Deploy app on prod
+  hosts: prod
+  remote_user: ubuntu
+  become: yes
+  tasks:
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+  
+  - name: install packages
+    apt: name={{item}} state=present update_cache=yes
+    with_items:
+      - python-pip
+      - awscli
+  
+  - name: install boto
+    command: pip install boto
+    become: yes
+
+  - name: install boto3
+    command: pip install boto3
+    become: yes
+
+  - name: Install Tomcat 9
+    apt:
+      name: tomcat9 
+      state: present
+
+  - name: Ensure Tomcat9 is started and enabled on boot.
+    service:
+      name: tomcat9
+      state: started 
+      enabled: yes
+  
+  - name: Download war on tomcat
+    command: aws s3 cp s3://sanspank.com/hello-1.0.war /var/lib/tomcat9/webapps/
+    become: yes

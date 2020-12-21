@@ -1,4 +1,4 @@
----
+--- переделать на s3!
 - name: Create instances
   hosts: localhost
   gather_facts: False
@@ -7,7 +7,7 @@
     security_group: mysecgp1
     image: ami-0e1ce3e0deb8896d2
     region: eu-central-1
-
+#   instance_profile_name:
   tasks:
 
     - name: create key pair
@@ -22,6 +22,7 @@
 
     - name: Launch instance
       ec2:
+#        instance_profile_name:
          profile: default
          key_name: devops13
          group: "{{ security_group }}"
