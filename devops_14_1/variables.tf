@@ -1,8 +1,8 @@
 variable "my_access_key" {
-  default = "AKIAYRZAMWJSQO5SZKXI"
+  default = ""
 } 
 variable "my_secret_key" {
-  default = "lGT9MzxJjIvufGKLqWO/5XB5ZPBmE7JyWw+73IgL"
+  default = ""
 } 
 
 variable "my_key_pair" {
